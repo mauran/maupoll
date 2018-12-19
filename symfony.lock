@@ -1,4 +1,7 @@
 {
+    "clue/stream-filter": {
+        "version": "v1.4.1"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -77,14 +80,26 @@
     "egulias/email-validator": {
         "version": "2.1.7"
     },
+    "evenement/evenement": {
+        "version": "v3.0.1"
+    },
     "facebook/webdriver": {
         "version": "1.6.0"
     },
     "fig/link-util": {
         "version": "1.0.0"
     },
+    "guzzlehttp/psr7": {
+        "version": "1.5.2"
+    },
+    "http-interop/http-middleware": {
+        "version": "0.5.0"
+    },
     "jdorn/sql-formatter": {
         "version": "v1.2.17"
+    },
+    "jean85/pretty-package-versions": {
+        "version": "1.2"
     },
     "monolog/monolog": {
         "version": "1.24.0"
@@ -94,6 +109,33 @@
     },
     "ocramius/proxy-manager": {
         "version": "2.1.1"
+    },
+    "php-http/client-common": {
+        "version": "2.0.0"
+    },
+    "php-http/curl-client": {
+        "version": "2.0.0"
+    },
+    "php-http/discovery": {
+        "version": "1.6.1"
+    },
+    "php-http/httplug": {
+        "version": "v2.0.0"
+    },
+    "php-http/message": {
+        "version": "1.7.2"
+    },
+    "php-http/message-factory": {
+        "version": "v1.0.2"
+    },
+    "php-http/promise": {
+        "version": "v1.0.0"
+    },
+    "php-pm/httpkernel-adapter": {
+        "version": "1.0.6"
+    },
+    "php-pm/php-pm": {
+        "version": "1.0.5"
     },
     "phpdocumentor/reflection-common": {
         "version": "1.0.1"
@@ -110,6 +152,15 @@
     "psr/container": {
         "version": "1.0.0"
     },
+    "psr/http-client": {
+        "version": "1.0.0"
+    },
+    "psr/http-factory": {
+        "version": "1.0.1"
+    },
+    "psr/http-message": {
+        "version": "1.0.1"
+    },
     "psr/link": {
         "version": "1.0.0"
     },
@@ -119,6 +170,45 @@
     "psr/simple-cache": {
         "version": "1.0.1"
     },
+    "ralouphie/getallheaders": {
+        "version": "2.0.5"
+    },
+    "ramsey/uuid": {
+        "version": "3.8.0"
+    },
+    "react/cache": {
+        "version": "v0.5.0"
+    },
+    "react/child-process": {
+        "version": "v0.5.2"
+    },
+    "react/dns": {
+        "version": "v0.4.16"
+    },
+    "react/event-loop": {
+        "version": "v1.0.0"
+    },
+    "react/http": {
+        "version": "v0.8.4"
+    },
+    "react/promise": {
+        "version": "v2.7.1"
+    },
+    "react/promise-stream": {
+        "version": "v1.1.1"
+    },
+    "react/promise-timer": {
+        "version": "v1.5.0"
+    },
+    "react/socket": {
+        "version": "v1.2.0"
+    },
+    "react/stream": {
+        "version": "v1.1.0"
+    },
+    "ringcentral/psr7": {
+        "version": "1.2.2"
+    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
@@ -126,6 +216,21 @@
             "branch": "master",
             "version": "5.2",
             "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
+        }
+    },
+    "sentry/sdk": {
+        "version": "2.0.2"
+    },
+    "sentry/sentry": {
+        "version": "2.0.1"
+    },
+    "sentry/sentry-symfony": {
+        "version": "3.0",
+        "recipe": {
+            "repo": "github.com/symfony/recipes-contrib",
+            "branch": "master",
+            "version": "3.0",
+            "ref": "9746f0823302d7980e5273ef7a69ef3f5ac80914"
         }
     },
     "swiftmailer/swiftmailer": {
@@ -389,15 +494,6 @@
             "ref": "6bdfa1a95f6b2e677ab985cd1af2eae35d62e0f6"
         }
     },
-    "symfony/web-server-bundle": {
-        "version": "3.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.3",
-            "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
-        }
-    },
     "symfony/yaml": {
         "version": "v4.2.1"
     },
@@ -409,6 +505,9 @@
     },
     "zendframework/zend-code": {
         "version": "3.3.1"
+    },
+    "zendframework/zend-diactoros": {
+        "version": "2.1.2"
     },
     "zendframework/zend-eventmanager": {
         "version": "3.2.1"
