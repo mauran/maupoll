@@ -35,6 +35,7 @@ class SlackVoteController extends AbstractController
         }
         $question = $question[0] . '?';
         $answers = str_replace($question, '', $text);
+        $answers = str_replace('”", '"', $answer);
         preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $answers, $answers);
         $answers = $answers[0];
 
