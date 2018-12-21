@@ -63,6 +63,7 @@ class SlackVoteController extends AbstractController
             $key++;
             $pollOption = new PollOption();
             $answer = str_replace('"', '', $answer);
+            $answer = str_replace('”", '', $answer);
             $pollOption->setAnswer($answer);
             $pollOption->setPoll($poll);
             $objectManager->persist($pollOption);
