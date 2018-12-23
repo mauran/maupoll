@@ -1,4 +1,2 @@
-<p align="justify">
-#MauPoll 
-</p>
+# Maupoll 📊
 Dead simple poll for Slack
