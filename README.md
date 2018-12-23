@@ -1,4 +1,4 @@
 <p align="justify">
-  # MauPoll 
+  #MauPoll 
 </p>
 Dead simple poll for Slack
