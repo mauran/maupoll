@@ -29,13 +29,9 @@ class SlackVoteController extends AbstractController
 
         $username = $request->request->get('user_name');
         $text = $request->request->get('text');
-        $question = explode('?', $text);
-        if(count($question) === 0) {
-            return "There was no question here?";
-        }
-        $question = $question[0] . '?';
         $answers = str_replace($question, '', $text);
         preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $answers, $answers);
+        $question = array_shift($answers);
         $answers = $answers[0];
 
         if(count($answers) > 5) {
