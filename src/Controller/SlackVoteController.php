@@ -144,7 +144,7 @@ class SlackVoteController extends AbstractController
             foreach ($option->getVoters() as $voter) {
                 $users .= $voter->getUser() . ', ';
             }
-            $message .= $this->getEmojiForNumber($key) . ' ' . $option->getAnswer() . ' `' . count($option->getVoters()) .'` '. PHP_EOL. implode(', ', $voters) . PHP_EOL;
+            $message .= $this->getEmojiForNumber($key) . ' ' . $option->getAnswer() . ' `' . count($option->getVoters()) .'` '. PHP_EOL. implode(', @', $voters) . PHP_EOL;
         }
 
         $originalMessage['attachments'][0]['text'] = $message;
