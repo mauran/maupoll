@@ -37,6 +37,7 @@ class SlackVoteController extends AbstractController
             return new Response("Max 5 answers");
         }
 
+        
 
         $question = array_shift($answers);
         $question = str_replace('"', '', $question);
