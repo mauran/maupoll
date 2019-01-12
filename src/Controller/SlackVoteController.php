@@ -105,6 +105,9 @@ class SlackVoteController extends AbstractController
         $payload = json_decode($request->request->get('payload'), true);
         $pollId = $payload['callback_id'];
         $poll = json_decode($redis->get($pollId), true);
+        $poll['updated'] = time();
+        $redis->set($pollId, json_encode($poll));
+
         $vote = $payload['actions'][0]['value'];
         $userId = $payload['user']['id'];
 
@@ -115,7 +118,7 @@ class SlackVoteController extends AbstractController
         foreach ($poll['answers'] as $key => $option) {
             $poll['answers'][$key]['voters'] = array_diff($option['voters'], [$userId]);
         }
-        $poll['answers'][$vote]['voters'][] = $userId;
+
         /** @var PollOption $option */
         foreach ($poll['answers'] as $key =>  $option) {
             $users = '';
@@ -125,6 +128,7 @@ class SlackVoteController extends AbstractController
             $message .= $this->getEmojiForNumber($key) . ' ' . $option['text'] . ' `' . count($option['voters']) .'` '. PHP_EOL.  $users . PHP_EOL;
         }
 
+        $poll['answers'][$vote]['voters'][] = $userId;
         $redis->set($pollId, json_encode($poll));
         $originalMessage['attachments'][0]['text'] = $message;
         $originalMessage['attachments'][0]['fallback'] = $message;
