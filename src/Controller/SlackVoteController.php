@@ -105,12 +105,10 @@ class SlackVoteController extends AbstractController
         $payload = json_decode($request->request->get('payload'), true);
         $pollId = $payload['callback_id'];
         $poll = json_decode($redis->get($pollId), true);
-        $poll['updated'] = time();
-        $redis->set($pollId, json_encode($poll));
 
         $vote = $payload['actions'][0]['value'];
         $userId = $payload['user']['id'];
-
+        
 
         $originalMessage = $payload['original_message'];
         $message = "*" . $poll['question'] . "*" . PHP_EOL;
