@@ -37,7 +37,7 @@ class SlackVoteController extends AbstractController
             return new Response("Max 5 answers");
         }
 
-        
+
 
         $question = array_shift($answers);
         $question = str_replace('"', '', $question);
@@ -108,7 +108,7 @@ class SlackVoteController extends AbstractController
         $vote = $payload['actions'][0]['value'];
         $userId = $payload['user']['id'];
 
-        $redis->set($pollId, json_encode($poll));
+
         $originalMessage = $payload['original_message'];
         $message = "*" . $poll['question'] . "*" . PHP_EOL;
 
@@ -125,6 +125,7 @@ class SlackVoteController extends AbstractController
             $message .= $this->getEmojiForNumber($key) . ' ' . $option['text'] . ' `' . count($option['voters']) .'` '. PHP_EOL.  $users . PHP_EOL;
         }
 
+        $redis->set($pollId, json_encode($poll));
         $originalMessage['attachments'][0]['text'] = $message;
         $originalMessage['attachments'][0]['fallback'] = $message;
         return new JsonResponse($originalMessage);
