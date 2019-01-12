@@ -81,7 +81,6 @@ class SlackVoteController extends AbstractController
             $message .= $this->getEmojiForNumber($key) . ' ' . $answer . " `0`" .PHP_EOL . PHP_EOL;
         }
 
-        $redis->set($id, json_encode($poll));
         $message .= PHP_EOL;
         $messageAttachment = [
             'text' => $message,
@@ -105,10 +104,11 @@ class SlackVoteController extends AbstractController
         $payload = json_decode($request->request->get('payload'), true);
         $pollId = $payload['callback_id'];
         $poll = json_decode($redis->get($pollId), true);
+        $poll['timestamp'] = time();
 
         $vote = $payload['actions'][0]['value'];
         $userId = $payload['user']['id'];
-        
+
 
         $originalMessage = $payload['original_message'];
         $message = "*" . $poll['question'] . "*" . PHP_EOL;
@@ -127,6 +127,7 @@ class SlackVoteController extends AbstractController
         }
 
         $poll['answers'][$vote]['voters'][] = $userId;
+        $redis->connect();
         $redis->set($pollId, json_encode($poll));
         $originalMessage['attachments'][0]['text'] = $message;
         $originalMessage['attachments'][0]['fallback'] = $message;
