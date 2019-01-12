@@ -1,0 +1,10 @@
+snc_redis:
+    clients:
+        default:
+            type: predis
+            alias: default
+            dsn: redis://localhost
+            logging: '%kernel.debug%'
+services:
+    Predis\Client: '@snc_redis.default'
+    Predis\ClientInterface: '@Predis\Client'

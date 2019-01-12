@@ -2,10 +2,9 @@
 
 namespace App\Controller;
 
-use App\Entity\Poll;
-use App\Entity\PollOption;
-use App\Entity\PollUserOption;
+
 use Doctrine\Common\Persistence\ObjectManager;
+use Predis\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -24,28 +23,35 @@ class SlackVoteController extends AbstractController
     /**
      * @Route("/command", name="slack_command")
      */
-    public function command(Request $request, ObjectManager $objectManager)
+    public function command(Request $request, Client $redis)
     {
-
-        $username = $request->request->get('user_name');
         $text = $request->request->get('text');
-        $answers = str_replace($question, '', $text);
-        preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $answers, $answers);
-        $question = array_shift($answers);
+        preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $text, $answers);
         $answers = $answers[0];
 
-        if(count($answers) > 5) {
-            return new Response('Max 5 answers allowed');
+        if(count($answers) < 3) {
+            return new Response("There must be at least 1 answer");
         }
 
-        $poll = new Poll();
-        $poll->setQuestion($question);
-        $poll->setCreator($username);
-        $objectManager->persist($poll);
-        $objectManager->flush();
+        if(count($answers) > 5) {
+            return new Response("Max 5 answers");
+        }
+
+
+        $question = array_shift($answers);
+        $question = str_replace('"', '', $question);
+
+        $id = uniqid('poll');
+
+        $poll = [
+            'id' => $id,
+            'question' => $question,
+            'creator_name' => $request->request->get('user_name'),
+            'creator_id' => $request->request->get('user_id')
+        ];
 
         $attachments = [
-            "callback_id" => $poll->getId(),
+            "callback_id" => $id,
             "title" => "",
             "attachment_type" => "default",
             "fallback" => "Your slack client does not support voting",
@@ -53,32 +59,30 @@ class SlackVoteController extends AbstractController
             "color" => self::ATTACHMENT_COLOR
         ];
 
-        $message = "*" . $poll->getQuestion() . "*" . PHP_EOL;
+        $message = "*" . $question . "*" . PHP_EOL;
 
         foreach ($answers as $key =>  $answer) {
             $key++;
-            $pollOption = new PollOption();
             $answer = str_replace('"', '', $answer);
-            $pollOption->setAnswer($answer);
-            $pollOption->setPoll($poll);
-            $objectManager->persist($pollOption);
-            $objectManager->flush();
+
+            $poll['answers'][$key] = [
+                'text' => $answer,
+                'voters' => []
+            ];
 
             $attachments['actions'][] = [
                 "name" => "vote-option",
                 "text" => $this->getEmojiForNumber($key),
                 "type" => "button",
-                "value" => $pollOption->getId(),
+                "value" => $key,
                 "color" => self::ATTACHMENT_COLOR
             ];
-
             $message .= $this->getEmojiForNumber($key) . ' ' . $answer . " `0`" .PHP_EOL . PHP_EOL;
         }
 
+        $redis->set($id, json_encode($poll));
         $message .= PHP_EOL;
-
         $messageAttachment = [
-
             'text' => $message,
             'color' => self::ATTACHMENT_COLOR
         ];
@@ -95,56 +99,29 @@ class SlackVoteController extends AbstractController
     /**
      * @Route("/action")
      */
-    public function action(Request $request, ObjectManager $em)
+    public function action(Request $request, Client $redis)
     {
-
         $payload = json_decode($request->request->get('payload'), true);
         $pollId = $payload['callback_id'];
+        $poll = json_decode($redis->get($pollId), true);
         $vote = $payload['actions'][0]['value'];
-        $user = $payload['user']['name'];
-        /** @var PollOption $option */
-        $option = $em->getRepository(PollOption::class)->find($vote);
+        $userId = $payload['user']['id'];
 
-        /** @var PollUserOption[] $alreadyVoted */
-
-        $removeVoteAction = false;
-        $alreadyVoted = $em->getRepository(PollUserOption::class)->getActiveVotesForUser($user, $pollId);
-        foreach ($alreadyVoted as $alreadyVote) {
-            if($alreadyVote->getPollOptionId()->getId() === (int)$vote) {
-                $em->remove($alreadyVote);
-                $removeVoteAction = true;
-            }
-        }
-
-        $em->flush();
-
-        if(!$removeVoteAction) {
-            $userOption = new PollUserOption();
-            $userOption->setUser($user);
-            $userOption->setPollOptionId($option);
-            $em->persist($userOption);
-            $em->flush();
-        }
-
+        $redis->set($pollId, json_encode($poll));
         $originalMessage = $payload['original_message'];
+        $message = "*" . $poll['question'] . "*" . PHP_EOL;
 
-        /** @var Poll $poll */
-        $poll = $em->getRepository(Poll::class)->find($pollId);
-
-        $message = "*" . $poll->getQuestion() . "*" . PHP_EOL;
-
+        foreach ($poll['answers'] as $key => $option) {
+            $poll['answers'][$key]['voters'] = array_diff($option['voters'], [$userId]);
+        }
+        $poll['answers'][$vote]['voters'][] = $userId;
         /** @var PollOption $option */
-        foreach ($poll->getOptions() as $key =>  $option) {
-            $key++;
+        foreach ($poll['answers'] as $key =>  $option) {
             $users = '';
-            $voters = array_map(function(PollUserOption $voter) {
-                return $voter->getUser();
-            }, $option->getVoters()->toArray());
-
-            foreach ($option->getVoters() as $voter) {
-                $users .= $voter->getUser() . ', ';
+            foreach ($option['voters'] as $voter) {
+                $users .= '<@' . $voter . '>';
             }
-            $message .= $this->getEmojiForNumber($key) . ' ' . $option->getAnswer() . ' `' . count($option->getVoters()) .'` '. PHP_EOL. implode(', @', $voters) . PHP_EOL;
+            $message .= $this->getEmojiForNumber($key) . ' ' . $option['text'] . ' `' . count($option['voters']) .'` '. PHP_EOL.  $users . PHP_EOL;
         }
 
         $originalMessage['attachments'][0]['text'] = $message;
@@ -153,17 +130,8 @@ class SlackVoteController extends AbstractController
     }
 
     private function getEmojiForNumber($index) {
-        $number = [];
-        $number[0] = ':zero:';
-        $number[1] = ':one:';
-        $number[2] = ':two:';
-        $number[3] = ':three:';
-        $number[4] = ':four:';
-        $number[5] = ':five:';
-        $number[6] = ':six:';
-        $number[7] = ':seven:';
-        $number[8] = ':eight:';
-        $number[9] = ':nine:';
-        return $number[$index];
+        $emojis = [':zero:', ':one:', ':two:', ':three:', ':four:', ':five:', ':six:', ':seven:', ':eight:', ':nine:'];
+        $numbers = range(0, 9);
+        return str_replace($numbers, $emojis, $index);
     }
 }
