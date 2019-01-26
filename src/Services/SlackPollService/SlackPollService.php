@@ -43,7 +43,7 @@ class SlackPollService implements SlackPollServiceInterface
     {
         $poll = $this->repository->find($pollId);
         $pollData = $poll->getPollData();
-        $pollData[$answerId][] = $userId;
+        $pollData[$answerId]['participants'][] = $userId;
         $poll->setPollData($pollData);
         return $poll;
     }
