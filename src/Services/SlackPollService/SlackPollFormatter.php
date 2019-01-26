@@ -59,6 +59,12 @@ class SlackPollFormatter implements SlackPollFormatterInterface
         return new JsonResponse($response);
     }
 
+    public function formatUpdatedPoll(array $original, Poll $poll): JsonResponse
+    {
+
+        // TODO: Implement formatUpdatedPoll() method.
+    }
+
     public function getSlackEmojiString(int $number) {
         $numbers = [];
         $numbers[0] = ':zero:';
