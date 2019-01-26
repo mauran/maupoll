@@ -26,6 +26,10 @@ class SlackVoteController extends AbstractController
     public function command(Request $request, SlackPollServiceInterface $slackPollService, SlackPollFormatterInterface $formatter, ObjectManager $objectManager)
     {
         $text = $request->get('text');
+        // Strip nasty mac quotes
+        $text = str_replace('“', '', $text);
+        $text = str_replace('”', '', $text);
+
         preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $text, $answers);
         $answers = $answers[0];
         if(count($answers) < 3) {
@@ -34,8 +38,14 @@ class SlackVoteController extends AbstractController
         if(count($answers) > 5) {
             return new Response("Max 5 answers");
         }
+
+        // Remove quotes
+        foreach ($answers as $key => $value) {
+            $answers[$key] = str_replace('"', '', $value);
+        }
+
         $question = array_shift($answers);
-        $question = str_replace('"', '', $question);
+
 
         $poll = $slackPollService->createPoll($question, $answers);
         $objectManager->persist($poll);
