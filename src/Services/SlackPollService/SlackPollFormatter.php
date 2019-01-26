@@ -32,7 +32,7 @@ class SlackPollFormatter implements SlackPollFormatterInterface
         foreach ($poll->getPollData() as $key => $value) {
            $valueCount++;
            $count = count($value['participants']);
-           $message .= $this->getSlackEmojiString($valueCount) . ' ' . $value['answer'] . " `" . $count ."`" .PHP_EOL . PHP_EOL;
+           $message .= $this->getSlackEmojiString($valueCount) . ' ' . $value['answer'] . " `" . $count ."`" .PHP_EOL . $this->formatParticipants($value['participants']) . PHP_EOL;
         }
 
         $messageAttachment = [
@@ -74,6 +74,13 @@ class SlackPollFormatter implements SlackPollFormatterInterface
         return $numbers[$number];
     }
 
+    public function formatParticipants(array $participants) : string {
+        $participantsList = '';
+        foreach ($participants as $participant) {
+            $participantsList .= '<@' . $participant . '>';
+        }
+        return $participantsList;
+    }
 
     function formatUpdatedPoll(array $original, Poll $poll): JsonResponse
     {
