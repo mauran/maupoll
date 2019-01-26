@@ -64,7 +64,6 @@ class SlackVoteController extends AbstractController
         $poll = $slackPollService->votePoll($pollId, $vote, $userId);
         $objectManager->persist($poll);
         $objectManager->flush();
-
-        return $formatter->formatUpdatedPoll($payload['original_message'], $poll);
+        return $formatter->formatPoll($poll);
     }
 }
