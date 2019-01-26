@@ -39,9 +39,11 @@ class SlackPollService implements SlackPollServiceInterface
         return $poll;
     }
 
-    function votePoll($pollId, $answerId, $userId): void
+    function votePoll($pollId, $answerId, $userId): Poll
     {
-        // TODO: Implement votePoll() method.
+        $poll = $this->repository->find($pollId);
+        $poll->getPollData()[$answerId][] = $userId;
+        return $poll;
     }
 
     function getPoll($pollId): Poll

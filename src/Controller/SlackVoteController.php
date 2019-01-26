@@ -46,7 +46,6 @@ class SlackVoteController extends AbstractController
 
         $question = array_shift($answers);
 
-
         $poll = $slackPollService->createPoll($question, $answers);
         $objectManager->persist($poll);
         $objectManager->flush();
@@ -56,10 +55,15 @@ class SlackVoteController extends AbstractController
     /**
      * @Route("/action")
      */
-    public function action(Request $request, SlackPollServiceInterface $slackPollService, SlackPollFormatterInterface $formatter)
+    public function action(Request $request, SlackPollServiceInterface $slackPollService, SlackPollFormatterInterface $formatter, ObjectManager $objectManager)
     {
-        $slackPollService->votePoll('kdo', 'ddd', 'ddd');
-        $poll = $slackPollService->getPoll('pollid');
+        $payload = json_decode($request->request->get('payload'), true);
+        $pollId = $payload['callback_id'];
+        $vote = $payload['actions'][0]['value'];
+        $userId = $payload['user']['id'];
+        $poll = $slackPollService->votePoll($pollId, $vote, $userId);
+        $objectManager->persist($poll);
+        $objectManager->flush();
         return $formatter->formatPoll($poll);
     }
 }
