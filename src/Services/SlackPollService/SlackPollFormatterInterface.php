@@ -16,6 +16,4 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 interface SlackPollFormatterInterface
 {
     function formatPoll(Poll $poll): JsonResponse;
-
-    function formatUpdatedPoll(array $original, Poll $poll) : JsonResponse;
 }

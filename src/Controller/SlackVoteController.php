@@ -6,9 +6,7 @@ namespace App\Controller;
 use App\Services\SlackPollService\SlackPollFormatterInterface;
 use App\Services\SlackPollService\SlackPollServiceInterface;
 use Doctrine\Common\Persistence\ObjectManager;
-use Predis\Client;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -33,8 +31,9 @@ class SlackVoteController extends AbstractController
         preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $text, $answers);
         $answers = $answers[0];
         if(count($answers) < 3) {
-            return new Response("There must be at least 1 answer");
+            return new Response("There must be at least 2 answers");
         }
+
         if(count($answers) > 5) {
             return new Response("Max 5 answers");
         }

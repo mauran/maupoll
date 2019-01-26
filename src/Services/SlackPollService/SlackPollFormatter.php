@@ -81,9 +81,4 @@ class SlackPollFormatter implements SlackPollFormatterInterface
         }
         return $participantsList;
     }
-
-    function formatUpdatedPoll(array $original, Poll $poll): JsonResponse
-    {
-        // TODO: Implement formatUpdatedPoll() method.
-    }
 }

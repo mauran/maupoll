@@ -43,19 +43,13 @@ class SlackPollService implements SlackPollServiceInterface
     {
         $poll = $this->repository->find($pollId);
         $pollData = $poll->getPollData();
-
         // You can only answer once
-        foreach ($pollData as $answerId => $answer) {
-            $pollData[$answerId]['participants'] = array_diff($answer['participants'], [$userId]);
+        foreach ($pollData as $id => $answer) {
+            $pollData[$id]['participants'] = array_diff($answer['participants'], [$userId]);
         }
-
         $pollData[$answerId]['participants'][] = $userId;
         $poll->setPollData($pollData);
         return $poll;
     }
 
-    function getPoll($pollId): Poll
-    {
-        // TODO: Implement getPoll() method.
-    }
 }
