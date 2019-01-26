@@ -25,7 +25,19 @@ class SlackVoteController extends AbstractController
      */
     public function command(Request $request, SlackPollServiceInterface $slackPollService, SlackPollFormatterInterface $formatter, ObjectManager $objectManager)
     {
-        $poll = $slackPollService->createPoll('HEJ', ['hest', 'hest', 'pis']);
+        $text = $request->get('text');
+        preg_match_all('/"(?:\\\\.|[^\\\\"])*"|\S+/', $text, $answers);
+        $answers = $answers[0];
+        if(count($answers) < 3) {
+            return new Response("There must be at least 1 answer");
+        }
+        if(count($answers) > 5) {
+            return new Response("Max 5 answers");
+        }
+        $question = array_shift($answers);
+        $question = str_replace('"', '', $question);
+
+        $poll = $slackPollService->createPoll($question, $answers);
         $objectManager->persist($poll);
         $objectManager->flush();
         return $formatter->formatPoll($poll);
