@@ -28,19 +28,23 @@ class SlackPollFormatter implements SlackPollFormatterInterface
 
         $message = '*' . $poll->getQuestion() . '* ' . PHP_EOL;
 
+        $valueCount = 0;
         foreach ($poll->getPollData() as $key => $value) {
+           $valueCount++;
            $count = count($value['participants']);
-           $message .= $this->getSlackEmojiString(0) . ' ' . $value['answer'] . " `" . $count ."`" .PHP_EOL . PHP_EOL;
+           $message .= $this->getSlackEmojiString($valueCount) . ' ' . $value['answer'] . " `" . $count ."`" .PHP_EOL . PHP_EOL;
         }
 
         $messageAttachment = [
             'text' => $message,
         ];
 
+        $valueCount = 0;
         foreach ($poll->getPollData() as $key => $value) {
+            $valueCount++;
             $attachment['actions'][] = [
                 "name" => "vote-option",
-                "text" => $this->getSlackEmojiString(7),
+                "text" => $this->getSlackEmojiString($valueCount),
                 "type" => "button",
                 "value" => $key,
             ];
