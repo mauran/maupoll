@@ -1,2 +1,2 @@
 # Maupoll 📊
-Dead simple poll for Slack
+Dead simple poll for Slack. Still in progress. :) 
