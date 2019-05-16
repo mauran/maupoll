@@ -86,5 +86,4 @@ class Poll
     {
         return $this->uuid;
     }
-
 }
