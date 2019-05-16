@@ -3,30 +3,25 @@
  * Created by PhpStorm.
  * User: mmu
  * Date: 2019-01-25
- * Time: 19:54
+ * Time: 19:54.
  */
 
 namespace App\Services\SlackPollService;
-
-
 
 use App\Entity\Poll;
 use App\Repository\PollRepository;
 use Ramsey\Uuid\Uuid;
 
-
 class SlackPollService implements SlackPollServiceInterface
 {
     private $repository;
-
 
     public function __construct(PollRepository $repository)
     {
         $this->repository = $repository;
     }
 
-
-    function createPoll($question, array $answers): Poll
+    public function createPoll($question, array $answers): Poll
     {
         $poll = new Poll();
         $poll->setQuestion($question);
@@ -36,10 +31,11 @@ class SlackPollService implements SlackPollServiceInterface
             $pollData[$id] = ['answer' => $answer, 'participants' => []];
         }
         $poll->setPollData($pollData);
+
         return $poll;
     }
 
-    function votePoll($pollId, $answerId, $userId): Poll
+    public function votePoll($pollId, $answerId, $userId): Poll
     {
         $poll = $this->repository->find($pollId);
         $pollData = $poll->getPollData();
@@ -49,7 +45,7 @@ class SlackPollService implements SlackPollServiceInterface
         }
         $pollData[$answerId]['participants'][] = $userId;
         $poll->setPollData($pollData);
+
         return $poll;
     }
-
 }
