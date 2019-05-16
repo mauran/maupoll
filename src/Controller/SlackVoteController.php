@@ -22,10 +22,9 @@ class SlackVoteController extends AbstractController
     /**
      * @Route("/command", name="slack_command")
      */
-    public function command(Request $request, SlackPollServiceInterface $slackPollService, SlackPollFormatterInterface $formatter, ObjectManager $objectManager, Logger $logger)
+    public function command(Request $request, SlackPollServiceInterface $slackPollService, SlackPollFormatterInterface $formatter, ObjectManager $objectManager)
     {
         $text = $request->get('text');
-        $logger->addAlert($text);
         // Strip nasty mac quotes
         $text = str_replace('“', '', $text);
         $text = str_replace('”', '', $text);
