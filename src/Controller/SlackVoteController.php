@@ -48,6 +48,7 @@ class SlackVoteController extends AbstractController
         $question = array_shift($answers);
 
         $poll = $slackPollService->createPoll($question, $answers);
+        $poll->setCreatedAt(new \DateTime());
         $objectManager->persist($poll);
         $objectManager->flush();
         return $formatter->formatPoll($poll);
