@@ -13,6 +13,9 @@ jobs:
     - name: Validate composer.json and composer.lock
       run: composer validate
 
+    - name: create empty .env
+      run: touch .env
+
     - name: Install dependencies
       run: composer install --prefer-dist --no-progress --no-suggest
 
