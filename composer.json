@@ -1,5 +1,7 @@
 {
     "type": "project",
+    "name": "mauran/maupoll",
+    "description": "Simple slack poll",
     "license": "proprietary",
     "require": {
         "php": "^7.1.3",
