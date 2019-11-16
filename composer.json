@@ -12,7 +12,7 @@
         "ramsey/uuid": "^3.8",
         "sensio/framework-extra-bundle": "^5.1",
         "sentry/sentry-symfony": "^3.0-beta2",
-        "symfony/asset": "4.2.*",
+        "symfony/asset": "4.3.*",
         "symfony/console": "4.2.*",
         "symfony/dotenv": "4.3.*",
         "symfony/expression-language": "4.2.*",
