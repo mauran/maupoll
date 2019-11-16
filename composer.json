@@ -14,7 +14,7 @@
         "sentry/sentry-symfony": "^3.0-beta2",
         "symfony/asset": "4.2.*",
         "symfony/console": "4.2.*",
-        "symfony/dotenv": "4.2.*",
+        "symfony/dotenv": "4.3.*",
         "symfony/expression-language": "4.2.*",
         "symfony/flex": "^1.1",
         "symfony/form": "4.2.*",
