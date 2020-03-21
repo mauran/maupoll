@@ -73,7 +73,7 @@ class SlackPollFormatter implements SlackPollFormatterInterface
         return $numbers[$number];
     }
 
-    public function formatParticipants(array $participants) : string
+    public function formatParticipants(array $participants): string
     {
         $participantsList = '';
         foreach ($participants as $participant) {

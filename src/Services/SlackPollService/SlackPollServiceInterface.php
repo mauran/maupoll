@@ -12,7 +12,7 @@ use App\Entity\Poll;
 
 interface SlackPollServiceInterface
 {
-    public function createPoll($question, array $answers) : Poll;
+    public function createPoll($question, array $answers): Poll;
 
-    public function votePoll($pollId, $answerId, $userId) : Poll;
+    public function votePoll($pollId, $answerId, $userId): Poll;
 }
