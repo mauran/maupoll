@@ -48,7 +48,7 @@ class SlackPollFormatter implements SlackPollFormatterInterface
         }
 
         $response = [
-            'response_type'    => 'ephemeral',
+            'response_type'    => 'in_channel',
             'replace_original' => true,
             'attachments'      => [$messageAttachment, $attachment],
         ];
