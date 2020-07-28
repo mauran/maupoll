@@ -33,8 +33,8 @@ class SlackVoteController extends AbstractController
             return new Response('There must be at least 2 answers');
         }
 
-        if (count($answers) > 5) {
-            return new Response('Max 5 answers');
+        if (count($answers) > 7) {
+            return new Response('Max 7 answers');
         }
 
         // Remove quotes
