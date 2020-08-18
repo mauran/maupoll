@@ -41,7 +41,7 @@ class SlackPollService implements SlackPollServiceInterface
         $pollData = $poll->getPollData();
         // You can only answer once
         foreach ($pollData as $id => $answer) {
-            //$pollData[$id]['participants'] = array_diff($answer['participants'], [$userId]);
+            $pollData[$id]['participants'] = array_diff($answer['participants'], [$userId]);
         }
         $pollData[$answerId]['participants'][] = $userId;
         $poll->setPollData($pollData);
